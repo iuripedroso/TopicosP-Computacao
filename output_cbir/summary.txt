@@ -1,0 +1,9 @@
+CBIR CEDAR — Sumário
+========================================
+Query 25 (original): AP=0.505 P@1=0.00 P@3=0.33 P@5=0.40
+Query 26 (falsificada): AP=0.471 P@1=0.00 P@3=0.67 P@5=0.60
+Query 27 (falsificada): AP=0.388 P@1=0.00 P@3=0.33 P@5=0.20
+Query 28 (falsificada): AP=0.471 P@1=1.00 P@3=0.33 P@5=0.20
+Query 29 (falsificada): AP=0.404 P@1=1.00 P@3=0.33 P@5=0.20
+
+MAP = 0.4479
