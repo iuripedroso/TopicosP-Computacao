@@ -23,7 +23,7 @@ def ler_sumario(caminho):
                 match = re.search(r'Query (\d+) \((.*?)\): AP=([\d.]+) P@1=([\d.]+) P@3=([\d.]+) P@5=([\d.]+)', linha)
                 if match:
                     id_q, classe, ap, p1, p3, p5 = match.groups()
-                    linhas_tabela.append([f'Q{id_q}', classe, ap, p1, p3, p5])
+                    linhas_tabela.append([f'Q{id_q}', classe.strip(), ap, p1, p3, p5])
             elif linha.startswith("MAP"):
                 map_score = linha.split("=")[1].strip()
     return linhas_tabela, map_score
@@ -55,9 +55,11 @@ def make_pdf():
     def img_block(path, target_width=14*cm, cap=''):
         items = []
         if os.path.exists(path):
+            # Lê as dimensões reais da imagem para não achatar
             img_reader = ImageReader(path)
             orig_width, orig_height = img_reader.getSize()
             
+            # Calcula a altura proporcional correta
             aspect_ratio = orig_height / orig_width
             target_height = target_width * aspect_ratio
             
@@ -69,17 +71,19 @@ def make_pdf():
 
     story = []
 
+    # CAPA
     story += [
         Spacer(1, 2*cm),
         Paragraph("Sistema de Content-Based Image Retrieval (CBIR) com Contexto Espacial", title_style),
         Spacer(1, 0.5*cm),
         Paragraph("Disciplina: Recuperação de Informação Multimídia", subtitle_style),
-        Paragraph("Iuri Pedroso &nbsp;|&nbsp; Herich Gabriel de Campos", subtitle_style),
+        Paragraph("[Nome do Aluno 1] &nbsp;|&nbsp; Iuri Pedroso", subtitle_style),
         Paragraph("Universidade Estadual do Centro-Oeste (UNICENTRO)", subtitle_style),
         Paragraph("Maio de 2026", subtitle_style),
         Spacer(1, 1.5*cm),
     ]
 
+    # INTRODUÇÃO
     story += [
         Paragraph("1. Introdução", h1),
         Paragraph(
@@ -93,6 +97,7 @@ def make_pdf():
             "ao escopo de indexação e recuperação clássica por similaridade geométrica e de textura.", body),
     ]
 
+    # DATASET
     story += [
         Paragraph("2. Dataset e Pré-processamento", h1),
         Paragraph(
@@ -121,17 +126,24 @@ def make_pdf():
     story += img_block('./output_cbir/fig1_dataset_overview.png', 14*cm,
                        'Figura 1: Amostra dos documentos do dataset CEDAR pré-processados.')
 
+    # PROPOSTAS (Com o texto do Iuri)
     story += [
         Paragraph("3. Propostas de Regiões", h1),
         Paragraph(
             "Para a identificação dos objetos de interesse, implementou-se o algoritmo de Sliding "
-            "Window. Três escalas de janelas varrem a imagem analisando a densidade de pixels pretos. "
-            "Posteriormente, aplica-se o filtro de Non-Maximum Suppression (NMS) com limiar de IoU "
-            "de 0.4 para eliminar redundâncias e isolar a assinatura principal.", body),
+            "Window. Três escalas de janelas horizontais varrem a imagem analisando a densidade de pixels pretos. "
+            "O grande problema dessa varredura é que você acaba com centenas de regiões marcadas em cima da "
+            "mesma assinatura.", body),
+        Paragraph(
+            "Para limpar essa sobreposição, aplica-se o filtro de Non-Maximum Suppression (NMS). "
+            "O NMS calcula o IoU (Intersection over Union) entre todas as janelas geradas — se duas "
+            "janelas se sobrepõem mais de 40% (limiar de 0.4), ele descarta a menor e fica só com a maior, "
+            "isolando a assinatura principal com precisão.", body),
     ]
     story += img_block('./output_cbir/fig2_proposals.png', 14*cm,
                        'Figura 2: Processo de geração de regiões candidatas e seleção via NMS.')
 
+    # EXTRAÇÃO
     story += [
         Paragraph("4. Extração de Descritores e Indexação", h1),
         Paragraph(
@@ -145,6 +157,7 @@ def make_pdf():
             "componentes e indexados em uma estrutura BallTree (espaço Euclidiano).", body),
     ]
 
+    # RANQUEAMENTO
     story += [
         Paragraph("5. Ranqueamento", h1),
         Paragraph(
@@ -157,6 +170,7 @@ def make_pdf():
             "incompatíveis do canvas, recebam penalidades estruturais.", body),
     ]
 
+    # RESULTADOS
     story += [
         Paragraph("6. Resultados", h1),
     ]
@@ -190,22 +204,24 @@ def make_pdf():
 
     story.append(PageBreak())
 
+    # IMAGENS DAS CONSULTAS
     story.append(Paragraph("6.1. Consultas", h2))
     
     if linhas_sumario:
         for i, linha in enumerate(linhas_sumario):
             id_q = linha[0].replace('Q', '')
             path = f'./output_cbir/fig3_query_{id_q}.png'
-            story += img_block(path, 14*cm, f'Figura {4+i}: Resultados recuperados para a {linha[0]}.')
+            story += img_block(path, 15*cm, f'Figura {4+i}: Resultados recuperados para a {linha[0]}.')
             if i < len(linhas_sumario) - 1:
                 story.append(Spacer(1, 0.5*cm))
     else:
         for qi in range(5):
             path = f'./output_cbir/fig3_query_{qi}.png'
-            story += img_block(path, 14*cm, f'Figura {4+qi}: Resultados recuperados para a Query {qi}.')
+            story += img_block(path, 15*cm, f'Figura {4+qi}: Resultados recuperados para a Query {qi}.')
             if qi < 4:
                 story.append(Spacer(1, 0.5*cm))
 
+    # CONCLUSÃO
     story += [
         Paragraph("7. Conclusão", h1),
         Paragraph(
@@ -217,7 +233,7 @@ def make_pdf():
     ]
 
     doc.build(story)
-    print(f" PDF acadêmico gerado: {OUT}")
+    print(f"[✓] PDF acadêmico gerado: {OUT}")
 
 if __name__ == '__main__':
     make_pdf()

@@ -2,7 +2,7 @@ import numpy as np
 
 def sliding_window_proposals(img, scales=None, step=16, min_dark_ratio=0.01):
     if scales is None:
-        scales = [(64, 128), (96, 192), (128, 256)]
+        scales = [(128, 64), (192, 96), (256, 128)]
     h, w = img.shape[:2]
     proposals = []
     for (ww, wh) in scales:
