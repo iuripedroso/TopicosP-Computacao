@@ -1,11 +1,8 @@
-# Dataset (imagens pesadas, não sobe pro GitHub)
 signatures/
 
-# Saída gerada pelo código
 output_cbir/
 output/
 
-# Python
 __pycache__/
 *.py[cod]
 *.pyo
@@ -13,9 +10,7 @@ __pycache__/
 venv/
 .venv/
 
-# Sistema
 .DS_Store
 Thumbs.db
 
-# PDF e figuras geradas
 *.pdf
