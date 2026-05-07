@@ -1,8 +1,9 @@
 # Dataset (imagens pesadas, não sobe pro GitHub)
-signatures/git rm -r --cached signatures/
+signatures/
 
 # Saída gerada pelo código
 output_cbir/
+output/
 
 # Python
 __pycache__/
@@ -18,4 +19,3 @@ Thumbs.db
 
 # PDF e figuras geradas
 *.pdf
-output/
