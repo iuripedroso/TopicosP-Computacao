@@ -1,0 +1,21 @@
+# Dataset (imagens pesadas, não sobe pro GitHub)
+signatures/git rm -r --cached signatures/
+
+# Saída gerada pelo código
+output_cbir/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+venv/
+.venv/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# PDF e figuras geradas
+*.pdf
+output/
